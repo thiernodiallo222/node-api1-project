@@ -8,7 +8,7 @@ server.use(express.json())
 
 server.post("/api/users", (req, res) => {
 	
-	if ((!req.body.name) || (!req.bio)) {
+	if ((!req.body.name) || (!req.body.bio)) {
 		return res.status(400).json({
 			message:"Please provide name and / or  bio for the user!"
 		})
@@ -46,7 +46,8 @@ server.delete("/api/users/:id", (req, res) => {
 	if (user) {
 		database.deleteUser(user.id)
 		// 204 is just a successful empty response
-		res.status(204).end()
+		res.status(200).json({ message: `${user.name} has been deleted` });
+		// res.status(204).end()
 	} else {
 		res.status(404).json({
 			message: "User not found",
@@ -62,7 +63,7 @@ server.patch("/api/users/:id", (req, res) => {
 		const updatedUser = database.updateUser(user.id, {
 			// use a fallback value if no name is specified, so it doesn't empty the field
             name: req.body.name || user.name,
-            bio: req.body.name || user.name
+            bio: req.body.bio || user.bio
 		})
 
 		res.json(updatedUser)
